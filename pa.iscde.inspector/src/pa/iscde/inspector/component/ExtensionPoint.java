@@ -1,6 +1,5 @@
 package pa.iscde.inspector.component;
 
-import pa.iscde.inspector.extensibility.Component;
 import pa.iscde.inspector.gui.ComponentDisign;
 
 public class ExtensionPoint {

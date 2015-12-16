@@ -1,4 +1,4 @@
-package pa.iscde.inspector.extensibility;
+package pa.iscde.inspector.component;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,14 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.osgi.framework.Bundle;
-
-import pa.iscde.inspector.component.ComponentData;
-import pa.iscde.inspector.component.Extension;
-import pa.iscde.inspector.component.ExtensionPoint;
-import pa.iscde.inspector.component.FileReader;
-import pa.iscde.inspector.component.FilesToRead;
-import pa.iscde.inspector.component.ManifestParser;
-import pa.iscde.inspector.component.PluginXmlParser;
 
 public class Component implements ComponentData{
 
