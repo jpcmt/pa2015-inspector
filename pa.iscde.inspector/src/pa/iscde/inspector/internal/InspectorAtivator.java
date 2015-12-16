@@ -14,10 +14,10 @@ import org.osgi.framework.ServiceReference;
 
 import com.google.common.util.concurrent.Service;
 
-import pa.iscde.inspector.component.Component;
 import pa.iscde.inspector.component.ComponentData;
 import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
+import pa.iscde.inspector.extensibility.Component;
 import pa.iscde.inspector.gui.ComponentDisign;
 import pt.iscte.pidesco.extensibility.PidescoServices;
 
