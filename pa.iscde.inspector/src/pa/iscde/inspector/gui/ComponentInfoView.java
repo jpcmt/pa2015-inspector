@@ -1,11 +1,14 @@
 package pa.iscde.inspector.gui;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.text.ComponentView;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -23,22 +26,29 @@ public class ComponentInfoView {
 	
 	private Composite viewArea;
 	private List<Widget> widgets;
-	private List<ComponentDisign> componentDisigns;
+	private Collection<ComponentDisign> componentDisigns;
 
-	public ComponentInfoView(Composite viewArea,List<ComponentDisign> componentDisigns) {
+	public ComponentInfoView(Composite viewArea,Collection<ComponentDisign> componentDisigns) {
 		this.viewArea = viewArea;
 		this.componentDisigns = componentDisigns;
 	}
 
 	public void fillInfoView() {
-		viewArea.setLayout(new GridLayout(2,false));
-		final Label label = new Label(viewArea, SWT.NONE);
+		viewArea.setLayout(new GridLayout(1,false));
+		final Composite topComposite = new Composite(viewArea, SWT.NONE);
+		topComposite.setLayoutData(new GridData(GridData.FILL,GridData.FILL,true,false));
+
+		final Composite bodyComposite = new Composite(viewArea, SWT.NONE);
+		bodyComposite.setLayoutData(new GridData(GridData.FILL,GridData.FILL,true,true));
+		final Label label = new Label(topComposite, SWT.LEFT);
 		label.setText("Component Info");
-		final Button button = new Button(viewArea, SWT.BUTTON1);
+		final Button button = new Button(topComposite, SWT.BUTTON4);
 		button.setText("view");
 		
-		final Tree tree = genTree();
+		final Tree tree = genTree(bodyComposite);
 
+		bodyComposite.setLayout(new FillLayout());
+		topComposite.setLayout(new FillLayout());
 
 	    tree.getItems()[0].setExpanded(true);
 		button.addListener(SWT.Selection, new Listener() {
@@ -47,10 +57,8 @@ public class ComponentInfoView {
 			public void handleEvent(org.eclipse.swt.widgets.Event event) {
 				switch (event.type) {
 				case SWT.Selection:
-					label.dispose();
-					
-					button.dispose();
-					tree.dispose();
+					topComposite.dispose();
+					bodyComposite.dispose();
 					viewArea.setLayout(new FillLayout(SWT.VERTICAL));
 					zestInit();
 					viewArea.layout();
@@ -66,8 +74,8 @@ public class ComponentInfoView {
 			
 	}
 
-	private Tree genTree() {
-		final Tree tree = new Tree(viewArea, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.LINE_CUSTOM);
+	private Tree genTree(Composite bodyComposite) {
+		final Tree tree = new Tree(bodyComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.LINE_CUSTOM);
 	    for (ComponentDisign componentDisign : componentDisigns) {
 			
 		

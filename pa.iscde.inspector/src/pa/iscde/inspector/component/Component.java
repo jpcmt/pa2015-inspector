@@ -87,28 +87,6 @@ public class Component implements ComponentData{
 		return requiredBundle;
 	}
 
-//	public static void main(String[] args) {
-//		List<ComponentData> comp = Component.getAllAvailableComponents();
-//
-//		for (ComponentData component : comp) {
-//			System.out.println("Name: " + component.getName() + " ");
-//			System.out.println("Ativator: " + ((Component)component).ativator + " ");
-//
-//			for (Extension extension : component.getExtensions()) {
-//				System.out.println(extension + " ");
-//			}
-//
-//			for (ExtensionPoint extensionPoint : component.getExtensionPoints()) {
-//				System.out.println(extensionPoint + " ");
-//			}
-//
-//			for (String req : ((Component)component).requiredBundle) {
-//				System.out.println("Required Bundle: " + req);
-//			}
-//			System.out.println("\n");
-//		}
-//	}
-
 	@Override
 	public List<String> getServices() {
 		return services;

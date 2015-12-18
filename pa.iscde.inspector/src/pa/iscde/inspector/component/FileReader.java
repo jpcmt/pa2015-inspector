@@ -17,8 +17,7 @@ public class FileReader {
 
 	public FileReader() {
 		File config = getConfigFile();
-		if (config == null)
-			throw new IllegalStateException("Configuration file could'nt be found");
+		
 		paths = getAllPaths(config);
 
 	}
@@ -46,6 +45,7 @@ public class FileReader {
 				}
 			}
 		} catch (IOException e1) {
+			System.out.println("Configuration file could'nt be found");
 			e1.printStackTrace();
 		}
 		return config;
@@ -91,11 +91,4 @@ public class FileReader {
 		}
 		return paths;
 	}
-
-//	public static void main(String[] args) {
-//		for (FilesToRead string : new FileReader().getFilesPaths()) {
-//			System.out.println(string.getManifestPath());
-//		}
-//	}
-
 }

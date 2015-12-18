@@ -19,7 +19,7 @@ import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
 import pa.iscde.inspector.extensibility.IActionComponent;
 
-public class ComponentDisign implements IActionComponent {
+public class ComponentDisign {
 	private Color color;
 	private boolean isAtive;
 	private GraphNode node;
@@ -28,6 +28,7 @@ public class ComponentDisign implements IActionComponent {
 	private ComponentData componentData;
 	private List<Extension> extensions;
 	private String name;
+	private Bundle bundle;
 
 	public ComponentDisign(ComponentData component) {
 		this.componentData = component;
@@ -35,8 +36,11 @@ public class ComponentDisign implements IActionComponent {
 		isAtive = true;
 		graphConnections = new ArrayList<GraphConnection>();
 		name = component.getName();
+		bundle = component.getBundle();
 	}
-
+	public Bundle getBundle() {
+		return bundle;
+	}
 	public void setExtensionPointOwnerDesign() {
 		for (ExtensionPoint extensionPoint : componentData.getExtensionPoints()) {
 			if (extensionPoint != null) {
@@ -144,12 +148,6 @@ public class ComponentDisign implements IActionComponent {
 
 	public List<ExtensionPoint> getExtensionPoints() {
 		return componentData.getExtensionPoints();
-	}
-
-	@Override
-	public Bundle getBundle() {
-
-		return componentData.getBundle();
 	}
 
 	public void setBlundeState(int type) {

@@ -11,7 +11,7 @@ public interface IAction{
 	
 	void actionComposite(Composite composite);
 
-	void selectionChange(IActionComponent componentDisign);
+	void selectionChange(IActionComponent graphObj);
 	
 	
 	

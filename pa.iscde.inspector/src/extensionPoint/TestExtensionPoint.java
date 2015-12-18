@@ -1,4 +1,4 @@
-package pa.iscde.inspector.extensibility;
+package extensionPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +9,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+
+import pa.iscde.inspector.extensibility.IAction;
 
 public class TestExtensionPoint {
 
