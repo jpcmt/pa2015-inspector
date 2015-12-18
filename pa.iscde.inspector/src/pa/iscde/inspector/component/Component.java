@@ -23,7 +23,7 @@ public class Component implements ComponentData{
 	private static List<ExtensionPoint> EXTPOINTS = new ArrayList<ExtensionPoint>();
 
 	public static HashMap<String,ComponentData> getAllAvailableComponents() {
-		List<FilesToRead> filesToReadPaths = FileReader.getFilesPaths();
+		List<FilesToRead> filesToReadPaths = new FileReader().getFilesPaths();
 		HashMap<String,ComponentData> components = new HashMap<String,ComponentData>();
 		for (FilesToRead path : filesToReadPaths) {
 			Component comp = new Component();
