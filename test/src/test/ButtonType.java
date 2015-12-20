@@ -1,5 +1,5 @@
 package test;
 
 public enum ButtonType {
-	STOP,RENAME
+	STOP,RENAME,START,INVISIBLE, VISIBLE
 }
