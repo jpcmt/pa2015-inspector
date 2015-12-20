@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
@@ -17,7 +16,6 @@ import org.osgi.framework.Bundle;
 import pa.iscde.inspector.component.ComponentData;
 import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
-import pa.iscde.inspector.extensibility.IActionComponent;
 
 public class ComponentDisign {
 	private Color color;
@@ -38,9 +36,11 @@ public class ComponentDisign {
 		name = component.getName();
 		bundle = component.getBundle();
 	}
+
 	public Bundle getBundle() {
 		return bundle;
 	}
+
 	public void setExtensionPointOwnerDesign() {
 		for (ExtensionPoint extensionPoint : componentData.getExtensionPoints()) {
 			if (extensionPoint != null) {
@@ -154,7 +154,12 @@ public class ComponentDisign {
 		if (node != null) {
 			System.out.println(type);
 			color = new Color(color.getDevice(), RGBState.GET_COLOR(type));
-			node.setBackgroundColor(color);
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					node.setBackgroundColor(color);
+
+				}
+			});
 		}
 	}
 

@@ -16,9 +16,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphItem;
+import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.osgi.framework.Bundle;
 
 import extensionPoint.IActionComponentImp;
 import extensionPoint.TestExtensionPoint;
@@ -94,39 +98,50 @@ public class ComponentGUI {
 	}
 
 	private void addAtionTab() {
-		TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
+		final TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
 		TabFolder tabFolder = new TabFolder(actionPanel, SWT.NONE);
 
-		for (final IAction actions : testExtensionPoint.getiActions()) {
-			graph.addSelectionListener(new SelectionListener() {
+		graph.addSelectionListener(new SelectionListener() {
 
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					List selection = ((Graph) e.widget).getSelection();
-					if (!selection.isEmpty()) {
-						Object obj = selection.get(0);
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List selection = ((Graph) e.widget).getSelection();
+				IActionComponentImp iActionComponentImp = null;
+				if (!selection.isEmpty()) {
+					GraphItem obj = (GraphItem) selection.get(0);
+					if (obj instanceof GraphNode)
 						for (ComponentDisign componentDisign : componentDisigns) {
-							if (componentDisign.getNode().equals(obj)
-									|| componentDisign.getGraphConnections().equals(obj)){
-								actions.selectionChange(new IActionComponentImp(componentDisign.getBundle(), obj));
+							if (componentDisign.getNode().equals(obj)) {
+								componentDisign.getBundle();
+								iActionComponentImp = new IActionComponentImp(componentDisign.getBundle(), obj);
 								break;
 							}
 						}
-					}
+					else if (obj instanceof GraphConnection)
+						iActionComponentImp = new IActionComponentImp(null, obj);
 				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-
+				for (final IAction actions : testExtensionPoint.getiActions()) {
+					if (iActionComponentImp != null)
+						actions.selectionChange(iActionComponentImp);
+					else
+						actions.zeroSelection();
 				}
-			});
+			}
 
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+
+			}
+		});
+		for (final IAction actions : testExtensionPoint.getiActions()) {
 			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 			tabItem.setText(actions.TabName());
 			Composite composite = new Composite(tabFolder, SWT.NONE);
 			tabItem.setControl(composite);
 			actions.actionComposite(composite);
 		}
+
+
 	}
 
 	protected void InfoInit() {
