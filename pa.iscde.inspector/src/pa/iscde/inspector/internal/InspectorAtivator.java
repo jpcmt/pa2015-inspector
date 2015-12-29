@@ -10,6 +10,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.util.concurrent.Service;
@@ -20,23 +21,29 @@ import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
 import pa.iscde.inspector.gui.ComponentDisign;
 import pt.iscte.pidesco.extensibility.PidescoServices;
+import pt.iscte.pidesco.javaeditor.internal.JavaEditorActivator;
+import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 
 public class InspectorAtivator implements BundleActivator {
 
 	private static InspectorAtivator instance;
-	private PidescoServices service;
 	private BundleContext context;
 	private HashMap<String, ComponentData> bundlemap;
 	private HashMap<String, ComponentDisign> bundleDesignMap;
+	private JavaEditorServices javaEditorService;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		instance = this;
 		this.context = context;
+		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
+		javaEditorService = context.getService(serviceReference);
 		addBundles();
 		createBlundleDisgnMap();
 	}
-
+	public JavaEditorServices getJavaEditorService() {
+		return javaEditorService;
+	}
 	private void createBlundleDisgnMap() {
 		bundleDesignMap = new HashMap<String, ComponentDisign>();
 		for (Entry<String, ComponentData> entry : bundlemap.entrySet()) {
@@ -46,7 +53,7 @@ public class InspectorAtivator implements BundleActivator {
 		
 	}
 
-	private void addBundles() {
+	private void addBundles() throws ClassNotFoundException {
 		Bundle[] bundles = context.getBundles();
 		bundlemap = Component.getAllAvailableComponents();
 		for (int i = 0; i < bundles.length; i++) {
@@ -81,8 +88,5 @@ public class InspectorAtivator implements BundleActivator {
 		return instance;
 	}
 
-	public PidescoServices getService() {
-		return service;
-	}
 
 }

@@ -1,10 +1,14 @@
 package pa.iscde.inspector.gui;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -13,6 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.zest.core.widgets.Graph;
@@ -23,10 +28,12 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
 
 import extensionPoint.IActionComponentImp;
 import extensionPoint.TestExtensionPoint;
 import pa.iscde.inspector.extensibility.IAction;
+import pa.iscde.inspector.internal.InspectorAtivator;
 
 public class ComponentGUI {
 
@@ -39,13 +46,15 @@ public class ComponentGUI {
 	private Graph graph;
 	private int height;
 	private int width;
+	private Composite serviceComposite;
+	private org.eclipse.swt.widgets.List listService;
+	private List<File> servicesClass = new ArrayList<File>();
 
-	public ComponentGUI(Composite viewArea, Collection<ComponentDisign> componentDisigns2) {
+	public ComponentGUI(Composite viewArea, Collection<ComponentDisign> componentDisigns) {
 		this.viewArea = viewArea;
-		height = viewArea.getSize().x;
-		width = viewArea.getSize().y;
-		System.out.println(height + " " + width);
-		this.componentDisigns = componentDisigns2;
+		height = viewArea.getSize().y;
+		width = viewArea.getSize().x;
+		this.componentDisigns = componentDisigns;
 	}
 
 	private void organizeLayout() {
@@ -69,7 +78,6 @@ public class ComponentGUI {
 	public void fillArea() {
 		organizeLayout();
 		graph = new Graph(zestPanel, SWT.NONE);
-		graph.addSelectionListener(new GUISelectionAdapter());
 		graph.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
 		drawNode(graph);
 		drawConnections();
@@ -92,21 +100,52 @@ public class ComponentGUI {
 
 			}
 		});
-		addAtionTab();
+		TabFolder tabFolder = addServiceTab();
+		addAtionTab(tabFolder);
 		zestPanel.setLayout(new FillLayout());
 
 	}
 
-	private void addAtionTab() {
-		final TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
+	private TabFolder addServiceTab() {
+
 		TabFolder tabFolder = new TabFolder(actionPanel, SWT.NONE);
+		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+		tabItem.setText("Services");
+		serviceComposite = new Composite(tabFolder, SWT.NONE);
+		serviceComposite.setLayout(new FillLayout());
+		tabItem.setControl(serviceComposite);
+		listService = new org.eclipse.swt.widgets.List(serviceComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+		listService.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				InspectorAtivator.getInstance().getJavaEditorService().openFile(servicesClass.get(listService.getSelectionIndex()));
+			}
+		});
+		return tabFolder;
+	}
+
+	private void addAtionTab(TabFolder tabFolder) {
+		final TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
 
 		graph.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+
 				List selection = ((Graph) e.widget).getSelection();
 				IActionComponentImp iActionComponentImp = null;
+				showServices(selection);
 				if (!selection.isEmpty()) {
 					GraphItem obj = (GraphItem) selection.get(0);
 					if (obj instanceof GraphNode)
@@ -141,7 +180,30 @@ public class ComponentGUI {
 			actions.actionComposite(composite);
 		}
 
+	}
 
+	protected void showServices(List selection) {
+
+		listService.removeAll();
+		servicesClass.clear();
+		for (Object object : selection) {
+			if (object instanceof GraphNode) {
+				GraphNode item = (GraphNode) object;
+				ComponentDisign disign = (ComponentDisign) item.getData();
+				if (!disign.getComponentData().getServices().isEmpty()) {
+					listServices(disign.getComponentData().getServices());
+				}
+			}
+
+		}
+	}
+
+	private void listServices(List<File> list) {
+		for (File f : list) {
+			servicesClass.add(f);
+			listService.add(f.getName());
+		}
+		serviceComposite.layout();
 	}
 
 	protected void InfoInit() {

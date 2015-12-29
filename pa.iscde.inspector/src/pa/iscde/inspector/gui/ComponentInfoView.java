@@ -25,7 +25,6 @@ import pa.iscde.inspector.component.ExtensionPoint;
 public class ComponentInfoView {
 	
 	private Composite viewArea;
-	private List<Widget> widgets;
 	private Collection<ComponentDisign> componentDisigns;
 
 	public ComponentInfoView(Composite viewArea,Collection<ComponentDisign> componentDisigns) {
@@ -115,7 +114,6 @@ public class ComponentInfoView {
 	    tree.addListener(SWT.Expand, new Listener() {
 	    @Override
 	      public void handleEvent(Event e) {
-	        System.out.println("Expand={" + e.item + "}");
 	      }
 
 	    });

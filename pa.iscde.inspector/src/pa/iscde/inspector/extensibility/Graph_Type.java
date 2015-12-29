@@ -13,5 +13,6 @@ public enum Graph_Type {
 	 * NODE - represent the zest {@link GraphNode}
 	 * CONNECTION - represent the zest {@link GraphConnection}
 	 */
-		NODE,CONNECTION
+		NODE,
+		CONNECTION
 }

@@ -33,7 +33,7 @@ public class ComponentDisign {
 		extensions = component.getExtensions();
 		isAtive = true;
 		graphConnections = new ArrayList<GraphConnection>();
-		name = component.getName();
+		name = component.getSymbolicName();
 		bundle = component.getBundle();
 	}
 
@@ -68,8 +68,8 @@ public class ComponentDisign {
 	public void drawNode(IContainer graphModel) {
 		graph = (Graph) graphModel;
 		node = new GraphNode(graph, SWT.NONE, name, this);
+		node.setData(this);
 		if (getBundle() != null) {
-			System.out.println(getBundle().getState());
 			color = new Color(node.getDisplay(), RGBState.GET_COLOR(getBundle().getState()));
 		} else
 			color = new Color(node.getDisplay(), RGBState.GET_COLOR(-1));
@@ -77,10 +77,6 @@ public class ComponentDisign {
 		node.setBackgroundColor(color);
 	}
 
-	public void setName(String name) {
-		this.name = name;
-		node.setText(name);
-	}
 
 	public void drawConnections() {
 		for (Extension extension : extensions) {
