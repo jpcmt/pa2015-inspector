@@ -1,10 +1,10 @@
 package pa.iscde.inspector.gui;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -17,9 +17,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphItem;
@@ -27,8 +27,7 @@ import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
+import org.omg.CORBA.OMGVMCID;
 
 import extensionPoint.IActionComponentImp;
 import extensionPoint.TestExtensionPoint;
@@ -41,21 +40,22 @@ public class ComponentGUI {
 	private Composite viewArea;
 	private Collection<ComponentDisign> componentDisigns;
 	private Collection<Composite> composites = new ArrayList<Composite>();
-	Composite zestPanel;
-	Composite configButtonPanel;
-	Composite actionPanel;
+	private Composite zestPanel;
+	private Composite configButtonPanel;
+	private Composite actionPanel;
 	private Graph graph;
 	private int height;
-	private int width;
 	private Composite serviceComposite;
 	private org.eclipse.swt.widgets.List listService;
 	private List<File> servicesClass = new ArrayList<File>();
 	private SearchComponent searchComponent;
+	private Composite infoComposite;
+	private ComponentInfoView componentInfoView;
+	private Tree tree;
 
 	public ComponentGUI(Composite viewArea, Collection<ComponentDisign> componentDisigns) {
 		this.viewArea = viewArea;
 		height = viewArea.getSize().y;
-		width = viewArea.getSize().x;
 		this.componentDisigns = componentDisigns;
 		searchComponent = new SearchComponent();
 	}
@@ -68,6 +68,7 @@ public class ComponentGUI {
 		configButtonPanel.setLayout(new RowLayout(SWT.VERTICAL | SWT.UP));
 		zestPanel = new Composite(viewArea, SWT.NONE);
 		zestPanel.setLayoutData(gridData);
+		zestPanel.setLayout(new FillLayout());
 		actionPanel = new Composite(viewArea, SWT.V_SCROLL);
 		gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		actionPanel.setLayoutData(gridData);
@@ -75,7 +76,6 @@ public class ComponentGUI {
 		composites.add(actionPanel);
 		composites.add(zestPanel);
 		composites.add(configButtonPanel);
-
 	}
 
 	public void fillArea() {
@@ -85,6 +85,7 @@ public class ComponentGUI {
 		drawNode(graph);
 		drawConnections();
 		graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
+
 		final Button b = new Button(configButtonPanel, SWT.NONE);
 		b.setText("Back");
 
@@ -103,15 +104,26 @@ public class ComponentGUI {
 
 			}
 		});
-		TabFolder tabFolder = addServiceTab();
-		addAtionTab(tabFolder);
-		zestPanel.setLayout(new FillLayout());
+		TabFolder infoTab = addInfoTab();
+		addServiceTab(infoTab);
+		addAtionTab(infoTab);
 
 	}
 
-	private TabFolder addServiceTab() {
-
+	private TabFolder addInfoTab() {
 		TabFolder tabFolder = new TabFolder(actionPanel, SWT.NONE);
+		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+		tabItem.setText("Component Info");
+		infoComposite = new Composite(tabFolder, SWT.NONE);
+		infoComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+		infoComposite.setLayout(new FillLayout());
+		tabItem.setControl(infoComposite);
+
+		return tabFolder;
+	}
+
+	private void addServiceTab(TabFolder tabFolder) {
+
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 		tabItem.setText("Services");
 		serviceComposite = new Composite(tabFolder, SWT.NONE);
@@ -119,23 +131,23 @@ public class ComponentGUI {
 		tabItem.setControl(serviceComposite);
 		listService = new org.eclipse.swt.widgets.List(serviceComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		listService.addMouseListener(new MouseListener() {
-			
+
 			@Override
 			public void mouseUp(MouseEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public void mouseDown(MouseEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				InspectorAtivator.getInstance().getJavaEditorService().openFile(servicesClass.get(listService.getSelectionIndex()));
+				InspectorAtivator.getInstance().getJavaEditorService()
+						.openFile(servicesClass.get(listService.getSelectionIndex()));
 			}
 		});
-		return tabFolder;
 	}
 
 	private void addAtionTab(TabFolder tabFolder) {
@@ -148,6 +160,7 @@ public class ComponentGUI {
 
 				List selection = ((Graph) e.widget).getSelection();
 				IActionComponentImp iActionComponentImp = null;
+				showInfo(selection);
 				showServices(selection);
 				if (!selection.isEmpty()) {
 					GraphItem obj = (GraphItem) selection.get(0);
@@ -183,6 +196,27 @@ public class ComponentGUI {
 			actions.actionComposite(composite);
 		}
 
+	}
+
+	protected void showInfo(List selection) {
+		if (tree != null) {
+			tree.dispose();
+		}
+		List<ComponentDisign> componentDisigns = new ArrayList<ComponentDisign>();
+		List<GraphConnection> graphConnections = new ArrayList<GraphConnection>();
+		for (Object obj : selection) {
+			GraphItem item = (GraphItem) obj;
+			if (item instanceof GraphNode)
+				componentDisigns.add((ComponentDisign) item.getData());
+			else {
+				graphConnections.add((GraphConnection) item);
+				
+			}
+		}
+		componentInfoView = new ComponentInfoView(infoComposite, componentDisigns);
+		tree = componentInfoView.genTree(infoComposite);
+		componentInfoView.genConnectionTree(graphConnections,infoComposite,tree);
+		infoComposite.layout();
 	}
 
 	protected void showServices(List selection) {

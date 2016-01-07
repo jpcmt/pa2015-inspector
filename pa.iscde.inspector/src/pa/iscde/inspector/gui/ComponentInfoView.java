@@ -15,9 +15,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.zest.core.widgets.GraphConnection;
 
 import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
@@ -73,14 +75,27 @@ public class ComponentInfoView {
 			
 	}
 
-	private Tree genTree(Composite bodyComposite) {
+	public Tree genTree(Composite bodyComposite) {
 		final Tree tree = new Tree(bodyComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.LINE_CUSTOM);
 	    for (ComponentDisign componentDisign : componentDisigns) {
 			
 		
 	      TreeItem name = new TreeItem(tree, 0);
 	      name.setText(componentDisign.getName());
-	      TreeItem symbolicName = new TreeItem(name, 1);
+	      nodeTreeAtributtes(componentDisign, name);
+	      }
+	    
+	    tree.addListener(SWT.Expand, new Listener() {
+	    @Override
+	      public void handleEvent(Event e) {
+	      }
+
+	    });
+		return tree;
+	}
+
+	private void nodeTreeAtributtes(ComponentDisign componentDisign, TreeItem name) {
+		TreeItem symbolicName = new TreeItem(name, 1);
 	      symbolicName.setText("symbolic name : " + componentDisign.getSymbolicName());
 	      TreeItem extensão = new TreeItem(name, 2);
 	      extensão.setText("Extensions");
@@ -109,18 +124,25 @@ public class ComponentInfoView {
 		        schema.setText("schema :" + extPoint.getSchema());
 		        
 		      }
-	      }
-	    
-	    tree.addListener(SWT.Expand, new Listener() {
-	    @Override
-	      public void handleEvent(Event e) {
-	      }
-
-	    });
-		return tree;
 	}
 
 	protected void zestInit() {
 		new ComponentGUI(viewArea, componentDisigns).fillArea();
 	}
+
+	public void genConnectionTree(List<GraphConnection> graphConnections, Composite infoComposite, Tree tree) {
+		for (GraphConnection graphConnection : graphConnections) {
+			TreeItem connection = new TreeItem(tree,0);
+			connection.setText("Connection : " + graphConnection.getData());
+			TreeItem sourceName = new TreeItem(connection, 1);
+			ComponentDisign source = (ComponentDisign) graphConnection.getSource().getData();
+			sourceName.setText("Source : " + source.getName());
+			nodeTreeAtributtes(source, sourceName);
+			TreeItem destName = new TreeItem(connection, 2);
+			ComponentDisign destination = (ComponentDisign) graphConnection.getDestination().getData();
+			destName.setText("Destination  : " + destination.getName());
+			nodeTreeAtributtes(destination, destName);
+		}
+	}
+
 }

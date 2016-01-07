@@ -83,7 +83,7 @@ public class ComponentDisign {
 			if (extension.getExtensionPoint() != null) {
 				GraphConnection graphConnection = new GraphConnection(graph, SWT.NONE, node,
 						extension.getExtensionPoint().getOwnerDesign().node);
-				graphConnection.setText(extension.getConnectionName());
+				graphConnection.setData(extension.getConnectionName());
 				graphConnection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 				graphConnections.add(graphConnection);
 			}
