@@ -4,7 +4,8 @@ Bundle-Name: Inspector
 Bundle-SymbolicName: pa.iscde.inspector;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.osgi.framework
+Import-Package: extensionpoints,
+ org.osgi.framework
 Require-Bundle: pt.iscte.pidesco;bundle-version="0.1.0",
  pt.iscte.pidesco.javaeditor;bundle-version="1.1.0",
  pt.iscte.pidesco.projectbrowser;bundle-version="0.1.0",

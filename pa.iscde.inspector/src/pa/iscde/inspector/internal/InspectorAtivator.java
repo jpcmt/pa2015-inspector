@@ -15,10 +15,12 @@ import org.osgi.framework.ServiceReference;
 
 import com.google.common.util.concurrent.Service;
 
+import extensionpoints.ISearchEvent;
 import pa.iscde.inspector.component.Component;
 import pa.iscde.inspector.component.ComponentData;
 import pa.iscde.inspector.component.Extension;
 import pa.iscde.inspector.component.ExtensionPoint;
+import pa.iscde.inspector.deepsearch.SearchComponent;
 import pa.iscde.inspector.gui.ComponentDisign;
 import pt.iscte.pidesco.extensibility.PidescoServices;
 import pt.iscte.pidesco.javaeditor.internal.JavaEditorActivator;
@@ -31,18 +33,26 @@ public class InspectorAtivator implements BundleActivator {
 	private HashMap<String, ComponentData> bundlemap;
 	private HashMap<String, ComponentDisign> bundleDesignMap;
 	private JavaEditorServices javaEditorService;
+	private ISearchEvent searchEventService;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		instance = this;
 		this.context = context;
+		// Get services 
 		ServiceReference<JavaEditorServices> serviceReference = context.getServiceReference(JavaEditorServices.class);
 		javaEditorService = context.getService(serviceReference);
+		ServiceReference<ISearchEvent>serviceReference2 = context.getServiceReference(ISearchEvent.class);
+		searchEventService = context.getService(serviceReference2);
+		
 		addBundles();
 		createBlundleDisgnMap();
 	}
 	public JavaEditorServices getJavaEditorService() {
 		return javaEditorService;
+	}
+	public ISearchEvent getSearchEventService() {
+		return searchEventService;
 	}
 	private void createBlundleDisgnMap() {
 		bundleDesignMap = new HashMap<String, ComponentDisign>();

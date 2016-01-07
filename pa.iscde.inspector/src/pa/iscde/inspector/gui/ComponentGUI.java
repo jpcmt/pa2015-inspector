@@ -32,6 +32,7 @@ import org.osgi.framework.ServiceReference;
 
 import extensionPoint.IActionComponentImp;
 import extensionPoint.TestExtensionPoint;
+import pa.iscde.inspector.deepsearch.SearchComponent;
 import pa.iscde.inspector.extensibility.IAction;
 import pa.iscde.inspector.internal.InspectorAtivator;
 
@@ -49,12 +50,14 @@ public class ComponentGUI {
 	private Composite serviceComposite;
 	private org.eclipse.swt.widgets.List listService;
 	private List<File> servicesClass = new ArrayList<File>();
+	private SearchComponent searchComponent;
 
 	public ComponentGUI(Composite viewArea, Collection<ComponentDisign> componentDisigns) {
 		this.viewArea = viewArea;
 		height = viewArea.getSize().y;
 		width = viewArea.getSize().x;
 		this.componentDisigns = componentDisigns;
+		searchComponent = new SearchComponent();
 	}
 
 	private void organizeLayout() {
@@ -207,6 +210,7 @@ public class ComponentGUI {
 	}
 
 	protected void InfoInit() {
+		searchComponent = null;
 		new ComponentInfoView(viewArea, componentDisigns).fillInfoView();
 
 	}
