@@ -46,11 +46,7 @@ public class TestAction implements IAction {
 	private Collection<IActionComponent> itensToMakeInvisible = new ArrayList<IActionComponent>();
 	public Object componentsToStart;
 
-	@Override
-	public String TabName() {
 
-		return "action";
-	}
 
 	@Override
 	public void actionComposite(Composite composite) {

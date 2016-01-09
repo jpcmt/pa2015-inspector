@@ -2,6 +2,7 @@ package extensionPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -18,7 +19,8 @@ public class TestExtensionPoint {
 
 	IExtensionPoint extensionPoint = extRegistry.getExtensionPoint("pa.iscde.inspector.inspectorAction");
 
-	Collection<IAction> iActions = new ArrayList<IAction>();
+	List<IAction> iActions = new ArrayList<IAction>();
+	List<String> names = new ArrayList<String>();
 	
 
 	public TestExtensionPoint() {
@@ -33,6 +35,7 @@ public class TestExtensionPoint {
 				String s = c.getAttribute("name");
 				try {
 					iActions.add((IAction) c.createExecutableExtension("class"));
+					names.add(s);
 				} catch (CoreException e1) {
 					e1.printStackTrace();
 				}
@@ -43,6 +46,9 @@ public class TestExtensionPoint {
 
 	public Collection<IAction> getiActions() {
 		return iActions;
+	}
+	public List<String> getNames() {
+		return names;
 	}
 
 }

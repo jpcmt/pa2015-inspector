@@ -154,6 +154,7 @@ public class ComponentGUI {
 	private void addAtionTab(TabFolder tabFolder) {
 		final TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
 
+		final Collection<IAction> getiActions = testExtensionPoint.getiActions();
 		graph.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -178,7 +179,7 @@ public class ComponentGUI {
 							components.add(new IActionComponentImp(null, obj));
 					}
 				}
-				for (final IAction actions : testExtensionPoint.getiActions()) {
+				for (final IAction actions : getiActions) {
 					actions.selectionChange(components);
 
 				}
@@ -189,12 +190,14 @@ public class ComponentGUI {
 
 			}
 		});
-		for (final IAction actions : testExtensionPoint.getiActions()) {
+		List<IAction> actions = (List<IAction>) testExtensionPoint.getiActions();
+		List<String> names = testExtensionPoint.getNames();
+		for (int i = 0; i <  actions.size();i++) {
 			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-			tabItem.setText(actions.TabName());
+			tabItem.setText(names.get(i));
 			Composite composite = new Composite(tabFolder, SWT.NONE);
 			tabItem.setControl(composite);
-			actions.actionComposite(composite);
+			actions.get(i).actionComposite(composite);
 		}
 
 	}

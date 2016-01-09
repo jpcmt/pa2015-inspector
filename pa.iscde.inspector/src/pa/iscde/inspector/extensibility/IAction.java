@@ -14,10 +14,7 @@ import pa.iscde.inspector.gui.ComponentDisign;
  */
 public interface IAction{
 	
-	/**
-	 * @return The label name for the action composite
-	 */
-	String TabName();
+	
 	
 	/**
 	 * @param composite The action composite, in which you can add widgets

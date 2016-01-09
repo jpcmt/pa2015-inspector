@@ -4,7 +4,8 @@
    <extension
          point="pa.iscde.inspector.inspectorAction">
       <action
-            class="test.TestAction">
+            class="test.TestAction"
+            name="Action Buttons">
       </action>
    </extension>
 
