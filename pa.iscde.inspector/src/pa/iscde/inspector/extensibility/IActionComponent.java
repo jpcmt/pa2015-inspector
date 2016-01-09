@@ -3,6 +3,7 @@ package pa.iscde.inspector.extensibility;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.osgi.framework.Bundle;
 /**
@@ -46,6 +47,8 @@ public interface IActionComponent {
 	 * @return the connection selected
 	 */
 	GraphConnection getConnection();
+
+	GraphItem getGraphItem();
 	
 	
 }

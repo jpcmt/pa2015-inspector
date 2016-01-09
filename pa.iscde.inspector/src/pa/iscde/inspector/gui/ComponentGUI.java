@@ -33,6 +33,7 @@ import extensionPoint.IActionComponentImp;
 import extensionPoint.TestExtensionPoint;
 import pa.iscde.inspector.deepsearch.SearchComponent;
 import pa.iscde.inspector.extensibility.IAction;
+import pa.iscde.inspector.extensibility.IActionComponent;
 import pa.iscde.inspector.internal.InspectorAtivator;
 
 public class ComponentGUI {
@@ -159,27 +160,27 @@ public class ComponentGUI {
 			public void widgetSelected(SelectionEvent e) {
 
 				List selection = ((Graph) e.widget).getSelection();
-				IActionComponentImp iActionComponentImp = null;
+				List<IActionComponent> components = new ArrayList<IActionComponent>();
 				showInfo(selection);
 				showServices(selection);
 				if (!selection.isEmpty()) {
-					GraphItem obj = (GraphItem) selection.get(0);
-					if (obj instanceof GraphNode)
-						for (ComponentDisign componentDisign : componentDisigns) {
-							if (componentDisign.getNode().equals(obj)) {
-								componentDisign.getBundle();
-								iActionComponentImp = new IActionComponentImp(componentDisign.getBundle(), obj);
-								break;
+					for (Object object : selection) {
+						GraphItem obj = (GraphItem) object;
+						if (obj instanceof GraphNode)
+							for (ComponentDisign componentDisign : componentDisigns) {
+								if (componentDisign.getNode().equals(obj)) {
+									componentDisign.getBundle();
+									components.add(new IActionComponentImp(componentDisign.getBundle(), obj));
+									break;
+								}
 							}
-						}
-					else if (obj instanceof GraphConnection)
-						iActionComponentImp = new IActionComponentImp(null, obj);
+						else if (obj instanceof GraphConnection)
+							components.add(new IActionComponentImp(null, obj));
+					}
 				}
 				for (final IAction actions : testExtensionPoint.getiActions()) {
-					if (iActionComponentImp != null)
-						actions.selectionChange(iActionComponentImp);
-					else
-						actions.zeroSelection();
+					actions.selectionChange(components);
+
 				}
 			}
 
@@ -210,12 +211,12 @@ public class ComponentGUI {
 				componentDisigns.add((ComponentDisign) item.getData());
 			else {
 				graphConnections.add((GraphConnection) item);
-				
+
 			}
 		}
 		componentInfoView = new ComponentInfoView(infoComposite, componentDisigns);
 		tree = componentInfoView.genTree(infoComposite);
-		componentInfoView.genConnectionTree(graphConnections,infoComposite,tree);
+		componentInfoView.genConnectionTree(graphConnections, infoComposite, tree);
 		infoComposite.layout();
 	}
 

@@ -1,5 +1,7 @@
 package pa.iscde.inspector.extensibility;
 
+import java.util.Collection;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
@@ -26,13 +28,9 @@ public interface IAction{
 	 * Activate when the selection event occurs
 	 * @param graphObj The object select in the zest composite
 	 */
-	void selectionChange(IActionComponent graphObj);
+	void selectionChange(Collection<IActionComponent> graphObjs);
 	
-	/**
-	 * when a client unselect the widgets this method get call
-	 */
 	
-	void zeroSelection();
 	
 	
 	

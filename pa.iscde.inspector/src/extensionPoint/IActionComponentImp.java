@@ -1,6 +1,7 @@
 package extensionPoint;
 
 import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.osgi.framework.Bundle;
 
@@ -49,6 +50,15 @@ public class IActionComponentImp implements IActionComponent {
 	@Override
 	public GraphConnection getConnection() {
 		return connection;
+	}
+
+	@Override
+	public GraphItem getGraphItem() {
+		if(connection != null)
+			return connection;
+		if(node != null)
+			return node;
+		return null;
 	}
 
 }
