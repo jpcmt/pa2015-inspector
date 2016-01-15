@@ -21,14 +21,28 @@ public class PluginXmlParser {
 	public List<ExtensionPoint> extensionPoint = new ArrayList<ExtensionPoint>();
 	private Component component;
 
+	/**
+	 * Get the {@link Extension}
+	 * @return
+	 */
 	public List<Extension> getExtension() {
 		return extension;
 	}
 
+	/**
+	 * Get the {@link ExtensionPoint}
+	 * @return
+	 */
 	public List<ExtensionPoint> getExtensionPoint() {
 		return extensionPoint;
 	}
 
+	/**
+	 * Construct and read the extensions and the extensions Point in the plugin xml file
+	 * @param file - plugin.xml
+	 * @param comp - The component the have this plugin.xml file
+	 * @return
+	 */
 	public PluginXmlParser ReadFile(File file, Component comp) {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		this.component = comp;
@@ -59,13 +73,11 @@ public class PluginXmlParser {
 				Node idNode = element.getAttributeNode("id");
 				Node nameNode = element.getAttributeNode("name");
 				Node pointNode = element.getAttributeNode("point");
-				Node classNode = element.getAttributeNode("class");
 				String id = (idNode != null) ? idNode.getTextContent() : null;
 				String name = (nameNode != null) ? nameNode.getTextContent() : null;
 				String point = (pointNode != null) ? pointNode.getTextContent() : null;
-				String clazz = (classNode != null) ? classNode.getTextContent() : null;
 
-				extension.add(new Extension(id, name, point, clazz));
+				extension.add(new Extension(id, name, point));
 			}
 		}
 	}

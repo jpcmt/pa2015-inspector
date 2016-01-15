@@ -1,28 +1,34 @@
 package pa.iscde.inspector.component;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.eclipse.equinox.internal.app.MainApplicationLauncher;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
-
+/**
+ * This CLass represents the object component which is the bundle most relevant information
+ * 
+ * @author Jorge Teixeira
+ *
+ */
 public class Component implements ComponentData {
 
 	private String Name;
 	private List<Extension> extensions;
 	private List<ExtensionPoint> extensionPoints;
-	private List<String> requiredBundle;
 	private List<File> services = new ArrayList<File>();
 	private String symbolicName;
 	private Bundle bundle;
 	private static List<ExtensionPoint> EXTPOINTS = new ArrayList<ExtensionPoint>();
-
+	/**
+	 * Return all the bundle list in the configuration file, in a {@link HashMap} which 
+	 * the key is the bundle symbolic name and the value is the {@link ComponentData}
+	 * @return
+	 */
 	public static HashMap<String, ComponentData> getAllAvailableComponents() {
 		List<FilesToRead> filesToReadPaths = new FileReader().getFilesPaths();
 		HashMap<String, ComponentData> components = new HashMap<String, ComponentData>();
@@ -31,7 +37,6 @@ public class Component implements ComponentData {
 			ManifestParser manifestParser = new ManifestParser().readFile(new File(path.getManifestPath()));
 
 			comp.Name = manifestParser.getName();
-			comp.requiredBundle = manifestParser.getRequiredBundle();
 			comp.symbolicName = manifestParser.getSymbolicName();
 			PluginXmlParser pluginXmlParser = new PluginXmlParser().ReadFile(new File(path.getPluginXmlPath()), comp);
 
@@ -50,13 +55,17 @@ public class Component implements ComponentData {
 		return components;
 	}
 
+	/**
+	 * You can cronstruct a new component given the
+	 * @param manifestPath path to this file
+	 * @param pluginXmlPath path to this file
+	 */
 	public Component(String manifestPath, String pluginXmlPath) {
 		ManifestParser parser = new ManifestParser().readFile(new File(manifestPath));
 		PluginXmlParser pluginXmlParser = new PluginXmlParser().ReadFile(new File(manifestPath), this);
 		extensions = pluginXmlParser.getExtension();
 		extensionPoints = pluginXmlParser.getExtensionPoint();
 		Name = parser.getName();
-		requiredBundle = parser.getRequiredBundle();
 	}
 
 	public Component() {
@@ -77,10 +86,6 @@ public class Component implements ComponentData {
 		return Collections.unmodifiableList(extensionPoints);
 	}
 
-	public List<String> getRequiredBundle() {
-		return requiredBundle;
-	}
-
 	@Override
 	public List<File> getServices() {
 		return services;
@@ -98,6 +103,10 @@ public class Component implements ComponentData {
 		return bundle;
 	}
 
+	/**
+	 * Set the {@link Bundle}
+	 * @param bundle 
+	 */
 	public void setBundle(Bundle bundle) {
 		this.bundle = bundle;
 		ServiceReference<?>[] registeredServices = bundle.getRegisteredServices();

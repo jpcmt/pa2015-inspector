@@ -8,13 +8,33 @@ import org.osgi.framework.Bundle;
 import pa.iscde.inspector.extensibility.Graph_Type;
 import pa.iscde.inspector.extensibility.IActionComponent;
 
+/**
+ * This class represents the object that you can make action on.
+ * @author Jorge Teixeira
+ *
+ */
+
 public class IActionComponentImp implements IActionComponent {
+	/**
+	 * This is the component {@link Bundle}.
+	 */
 	Bundle bundle;
+	/**
+	 * This represent the node object
+	 */
 	GraphNode node;
+	/**
+	 * This represent the connection
+	 */
 	GraphConnection connection;
 	private Graph_Type type;
 	
-	public IActionComponentImp(Bundle bundle, Object graphObj) {
+	/**
+	 * To construct the {@link IActionComponentImp} you need two provide the follow parameters 
+	 * @param bundle if available 
+	 * @param graphObj the object select in the Zest display
+	 */
+	public IActionComponentImp(Bundle bundle, GraphItem graphObj) {
 		this.bundle = bundle;
 		if (graphObj instanceof GraphNode) {
 			node = (GraphNode) graphObj;

@@ -7,7 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * This class read the necessaries files in the directories indicate at the configuration file 
+ * @author Jorge
+ *
+ */
 public class FileReader {
 
 	public static final String MANIFEST_FOLDER_NAME = "META-INF";
@@ -15,6 +19,9 @@ public class FileReader {
 	private static final String PLUGIN_FILE_CONFIG_PATH = "plugin_path.config";
 	private List<String> paths;
 
+	/**
+	 * Create a new object {@link FileReader}
+	 */
 	public FileReader() {
 		File config = getConfigFile();
 		
@@ -51,6 +58,10 @@ public class FileReader {
 		return config;
 	}
 
+	/**
+	 * Get a list of the files to read
+	 * @return list of files
+	 */
 	public List<FilesToRead> getFilesPaths() {
 		List<FilesToRead> list = new ArrayList<FilesToRead>();
 		for (String path : paths) {

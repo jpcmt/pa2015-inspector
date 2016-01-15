@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -27,10 +25,8 @@ import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.omg.CORBA.OMGVMCID;
-
+import extensionPoint.ExtensionPoint;
 import extensionPoint.IActionComponentImp;
-import extensionPoint.TestExtensionPoint;
 import pa.iscde.inspector.deepsearch.SearchComponent;
 import pa.iscde.inspector.extensibility.IAction;
 import pa.iscde.inspector.extensibility.IActionComponent;
@@ -53,12 +49,19 @@ public class ComponentGUI {
 	private Composite infoComposite;
 	private ComponentInfoView componentInfoView;
 	private Tree tree;
-
+	
+	/**
+	 * Construct a new {@link ComponentGUI}
+	 * Initialize the {@link SearchComponent} and the listener for the search
+	 * @param viewArea the composite to draw 
+	 * @param componentDisigns 
+	 */
 	public ComponentGUI(Composite viewArea, Collection<ComponentDisign> componentDisigns) {
 		this.viewArea = viewArea;
 		height = viewArea.getSize().y;
 		this.componentDisigns = componentDisigns;
 		searchComponent = new SearchComponent();
+		searchComponent.monitorizeSearch();
 	}
 
 	private void organizeLayout() {
@@ -78,7 +81,10 @@ public class ComponentGUI {
 		composites.add(zestPanel);
 		composites.add(configButtonPanel);
 	}
-
+	
+	/**
+	 * draw the nodes, the connections, the buttons and the Folder items in the {@link Composite} 
+	 */
 	public void fillArea() {
 		organizeLayout();
 		graph = new Graph(zestPanel, SWT.NONE);
@@ -152,9 +158,10 @@ public class ComponentGUI {
 	}
 
 	private void addAtionTab(TabFolder tabFolder) {
-		final TestExtensionPoint testExtensionPoint = new TestExtensionPoint();
+		final ExtensionPoint extensionPoint = new ExtensionPoint();
+		extensionPoint.init();
 
-		final Collection<IAction> getiActions = testExtensionPoint.getiActions();
+		final Collection<IAction> getiActions = extensionPoint.getiActions();
 		graph.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -190,9 +197,9 @@ public class ComponentGUI {
 
 			}
 		});
-		List<IAction> actions = (List<IAction>) testExtensionPoint.getiActions();
-		List<String> names = testExtensionPoint.getNames();
-		for (int i = 0; i <  actions.size();i++) {
+		List<IAction> actions = (List<IAction>) extensionPoint.getiActions();
+		List<String> names = extensionPoint.getNames();
+		for (int i = 0; i < actions.size(); i++) {
 			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 			tabItem.setText(names.get(i));
 			Composite composite = new Composite(tabFolder, SWT.NONE);

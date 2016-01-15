@@ -1,6 +1,7 @@
 package pa.iscde.inspector.gui;
 
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 
 public class RGBState {
@@ -16,7 +17,11 @@ public class RGBState {
 	static RGB STOPED() {
 		return new RGB(255, 0, 0);
 	}
-
+	/**
+	 * Get the define color for each bundle state. see {@link Bundle}. 
+	 * @param type Bunde state
+	 * @return
+	 */
 	public static RGB GET_COLOR(int type) {
 		switch (type) {
 		case BundleEvent.STARTED:

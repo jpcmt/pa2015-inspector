@@ -16,6 +16,9 @@ public class InspectorView implements PidescoView {
 	private HashMap<String,ComponentDisign> componentDisigns;
 	private Composite viewArea;
 
+	/**
+	 * Starts the {@link ComponentInfoView} 
+	 */
 	public void init() {
 		componentDisigns = InspectorAtivator.getInstance().getBundleDesignMap();
 		setExtensionPointOwnerDisign();

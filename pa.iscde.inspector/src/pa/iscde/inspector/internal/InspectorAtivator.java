@@ -35,6 +35,30 @@ public class InspectorAtivator implements BundleActivator {
 	private JavaEditorServices javaEditorService;
 	private ISearchEvent searchEventService;
 
+
+	public HashMap<String, ComponentData> getBundlemap() {
+		return bundlemap;
+	}
+
+	public BundleContext getContext() {
+		return context;
+	}
+
+	public static InspectorAtivator getInstance() {
+		return instance;
+	}
+	public JavaEditorServices getJavaEditorService() {
+		return javaEditorService;
+	}
+	public ISearchEvent getSearchEventService() {
+		return searchEventService;
+	}
+	public HashMap<String, ComponentDisign> getBundleDesignMap() {
+		return bundleDesignMap;
+	}
+	/**
+	 * Start this componet, get the required services, generate un hashMap with available {@link ComponentData} and {@link ComponentDisign}
+	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		instance = this;
@@ -48,12 +72,7 @@ public class InspectorAtivator implements BundleActivator {
 		addBundles();
 		createBlundleDisgnMap();
 	}
-	public JavaEditorServices getJavaEditorService() {
-		return javaEditorService;
-	}
-	public ISearchEvent getSearchEventService() {
-		return searchEventService;
-	}
+
 	private void createBlundleDisgnMap() {
 		bundleDesignMap = new HashMap<String, ComponentDisign>();
 		for (Entry<String, ComponentData> entry : bundlemap.entrySet()) {
@@ -75,10 +94,10 @@ public class InspectorAtivator implements BundleActivator {
 
 	}
 
-	public HashMap<String, ComponentDisign> getBundleDesignMap() {
-		return bundleDesignMap;
-	}
-
+	
+	/**
+	 * Stop this component
+	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		instance = null;
@@ -86,17 +105,6 @@ public class InspectorAtivator implements BundleActivator {
 
 	}
 
-	public HashMap<String, ComponentData> getBundlemap() {
-		return bundlemap;
-	}
-
-	public BundleContext getContext() {
-		return context;
-	}
-
-	public static InspectorAtivator getInstance() {
-		return instance;
-	}
 
 
 }

@@ -10,7 +10,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Jorge Teixeira
  *
- *This interface represent the object select which can be two types. {@link GraphConnection} or {@link GraphNode}.
+ *This interface represent the object selected by the user which can be two types. {@link GraphConnection} or {@link GraphNode}.
  *
  */
 public interface IActionComponent {
@@ -48,6 +48,11 @@ public interface IActionComponent {
 	 */
 	GraphConnection getConnection();
 
+	/**
+	 * When the type can be either a {@link GraphConnection} or {@link GraphNode}
+	 * 
+	 * @return the item selected
+	 */
 	GraphItem getGraphItem();
 	
 	

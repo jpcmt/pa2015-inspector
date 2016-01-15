@@ -15,14 +15,18 @@ public class SearchComponent {
 	private ISearchEvent searchEvent;
 	private HashMap<String, ComponentDisign> bundleDesignMap;
 	private ComponentDisign componentReacted;
-
+	/**
+	 * Construct a new SearchComponent
+	 */
 	public SearchComponent() {
 		searchEvent = InspectorAtivator.getInstance().getSearchEventService();
 		bundleDesignMap = InspectorAtivator.getInstance().getBundleDesignMap();
-		monitorizeSearch();
 	}
 
-	private void monitorizeSearch() {
+	/**
+	 * Listen to the user search and try to find a match
+	 */
+	public void monitorizeSearch() {
 		searchEvent.addListener(new ISearchEventListener() {
 
 			@Override
@@ -34,6 +38,11 @@ public class SearchComponent {
 		});
 	}
 
+	/**
+	 * Search for a match with the component symbolicname
+	 * bundle-name extensionPoint or  extension
+	 * @param text_Search
+	 */
 	protected void searchMatch(String text_Search) {
 		if (componentReacted != null)
 			componentReacted.getNode().unhighlight();

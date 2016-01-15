@@ -19,7 +19,6 @@ import pa.iscde.inspector.component.ExtensionPoint;
 
 public class ComponentDisign {
 	private Color color;
-	private boolean isAtive;
 	private GraphNode node;
 	private Graph graph;
 	private List<GraphConnection> graphConnections;
@@ -28,19 +27,118 @@ public class ComponentDisign {
 	private String name;
 	private Bundle bundle;
 
+	/**
+	 * Construct a new {@link ComponentDisign} 
+	 * @param component {@link ComponentData}
+	 */
 	public ComponentDisign(ComponentData component) {
 		this.componentData = component;
 		extensions = component.getExtensions();
-		isAtive = true;
 		graphConnections = new ArrayList<GraphConnection>();
 		name = component.getSymbolicName();
 		bundle = component.getBundle();
 	}
+	/**
+	 * Get the name
+	 * @return
+	 */
+	public String getName() {
+		return componentData.getName();
+	}
+	/**
+	 * Get the {@link ComponentData}
+	 * @return
+	 */
+	public ComponentData getComponentData() {
+		return componentData;
+	}
+	/**
+	 * Get the {@link Graph}
+	 * @return
+	 */
+	public Graph getGraph() {
+		return graph;
+	}
 
+	/**
+	 * Get the {@link GraphConnection}
+	 * @return
+	 */
+	public List<GraphConnection> getGraphConnections() {
+		return graphConnections;
+	}
+	/**
+	 * Get the {@link GraphNode}
+	 * @return
+	 */
+	public GraphNode getNode() {
+		return node;
+	}
+	/**
+	 * Get the {@link Bundle}
+	 * @return
+	 */
 	public Bundle getBundle() {
 		return bundle;
 	}
+	/**
+	 * Get a list of this component extension
+	 * @return
+	 */
+	public List<Extension> getExtensions() {
+		return extensions;
+	}
+	/**
+	 * Get the {@link Color}
+	 * @return
+	 */
+	public Color getColor() {
+		return color;
+	}
+	/**
+	 * Get the name
+	 * @return
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+		if (node != null)
+			node.setBackgroundColor(color);
+	}
 
+	/**
+	 * Get the symbolic name
+	 * @return
+	 */
+	public String getSymbolicName() {
+		return componentData.getSymbolicName();
+	}
+	/**
+	 * Get a list of extensionPoints
+	 * @return
+	 */
+	public List<ExtensionPoint> getExtensionPoints() {
+		return componentData.getExtensionPoints();
+	}
+
+	/**
+	 * Set the state of the bundle to update the background color
+	 * @param type
+	 */
+	public void setBlundeState(int type) {
+		if (node != null) {
+			System.out.println(type);
+			color = new Color(color.getDevice(), RGBState.GET_COLOR(type));
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					node.setBackgroundColor(color);
+
+				}
+			});
+		}
+	}
+	/**
+	 * Find the {@link ComponentDisign} the create this {@link ExtensionPoint}
+	 */
 	public void setExtensionPointOwnerDesign() {
 		for (ExtensionPoint extensionPoint : componentData.getExtensionPoints()) {
 			if (extensionPoint != null) {
@@ -48,23 +146,11 @@ public class ComponentDisign {
 			}
 		}
 	}
-
-	public ComponentData getComponentData() {
-		return componentData;
-	}
-
-	public Graph getGraph() {
-		return graph;
-	}
-
-	public List<GraphConnection> getGraphConnections() {
-		return graphConnections;
-	}
-
-	public GraphNode getNode() {
-		return node;
-	}
-
+	/**
+	 * Draw a {@link GraphNode} in the container
+	 * 
+	 * @param graphModel
+	 */
 	public void drawNode(IContainer graphModel) {
 		graph = (Graph) graphModel;
 		node = new GraphNode(graph, SWT.NONE, name, this);
@@ -77,10 +163,15 @@ public class ComponentDisign {
 		node.setBackgroundColor(color);
 	}
 
-
+	/**
+	 * Draw connections from one {@link GraphNode} to another base
+	 * on the {@link Extension} and the {@link ExtensionPoint}
+	 */
 	public void drawConnections() {
 		for (Extension extension : extensions) {
 			if (extension.getExtensionPoint() != null) {
+				System.out.println(name + "  " + extension.getName() + " " + extension.getExtensionPoint() + " "
+						+ extension.getExtensionPoint().getOwnerDesign());
 				GraphConnection graphConnection = new GraphConnection(graph, SWT.NONE, node,
 						extension.getExtensionPoint().getOwnerDesign().node);
 				graphConnection.setData(extension.getConnectionName());
@@ -89,74 +180,15 @@ public class ComponentDisign {
 			}
 		}
 	}
-
-	private void handleOverlappindConnection() {
-		int i = 0;
-		StringBuilder text = new StringBuilder();
-		for (GraphConnection graphConnection : graphConnections) {
-			text.append(graphConnection.getText() + System.getProperty("line.separator"));
-			if (i++ == 0) {
-				graphConnection.setText(graphConnections.size() + ": connections");
-				graphConnection.highlight();
-			} else
-				graphConnection.setVisible(false);
-		}
-		graphConnections.get(0)
-				.setText(graphConnections.get(0).getText() + System.getProperty("line.separator") + text);
-	}
-
-	public String getName() {
-		return componentData.getName();
-	}
-
-	public List<Extension> getExtensions() {
-		return extensions;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-		if (node != null)
-			node.setBackgroundColor(color);
-	}
-
-	public boolean isAtive() {
-		return isAtive;
-	}
-
-	public void setAtive(boolean isAtive) {
-		this.isAtive = isAtive;
-	}
-
+	/**
+	 * See if this component connect to any component
+	 * @return true if it does
+	 */
 	public boolean hasConnection() {
 		if (extensions == null || extensions.size() == 0) {
 			return false;
 		}
 		return true;
-	}
-
-	public String getSymbolicName() {
-		return componentData.getSymbolicName();
-	}
-
-	public List<ExtensionPoint> getExtensionPoints() {
-		return componentData.getExtensionPoints();
-	}
-
-	public void setBlundeState(int type) {
-		if (node != null) {
-			System.out.println(type);
-			color = new Color(color.getDevice(), RGBState.GET_COLOR(type));
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					node.setBackgroundColor(color);
-
-				}
-			});
-		}
 	}
 
 }
