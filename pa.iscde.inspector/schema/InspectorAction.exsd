@@ -15,6 +15,9 @@
          <appinfo>
             <meta.element />
          </appinfo>
+         <documentation>
+            This extension receive one composite which you can add widged, that interact with the user and make some type of reaction in the GraphItem in the zest Graph.
+         </documentation>
       </annotation>
       <complexType>
          <sequence>
@@ -52,14 +55,14 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  This name is use in the Tab from a TabItem type of objet, the user have to fill the name.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  This interface make possible to give the extension som important objet, required to implement this extension point.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":pa.iscde.inspector.extensibility.IAction"/>
